@@ -1,5 +1,5 @@
 #define MAX_NAME 255
-#define COMMAND_NUMBER 4
+#define COMMAND_NUMBER 3
 
 int execute(char * , const char * );
 void list_content(const char *);

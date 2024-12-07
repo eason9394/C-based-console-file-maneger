@@ -7,10 +7,6 @@
 
 int execute(char * path, const char * command)
 {
-    if(strcmp(command, "list") == 0) {
-        list_content(path);
-        return 1;
-    }
     if(strcmp(command, "open") == 0) {
         open_file(path);
         return 1;
@@ -32,7 +28,6 @@ void list_content(const char * path)
     DIR * dir = opendir(path);
     struct dirent * entry;
 
-    system("cls");
     if(dir == NULL) {
         printf("open failed\n");
         return;

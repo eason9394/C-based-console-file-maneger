@@ -7,9 +7,8 @@
 
 int main()
 {
-    const char commands[COMMAND_NUMBER][10] = {"list", "open", "switch", "exit"};
-    const char description[COMMAND_NUMBER][35] = {"list the content in this directory",
-                                                  "open the file", 
+    const char commands[COMMAND_NUMBER][10] = {"open", "switch", "exit"};
+    const char description[COMMAND_NUMBER][35] = {"open the file", 
                                                   "switch the path", 
                                                   "exit the program"};
     char command[10];
@@ -18,8 +17,9 @@ int main()
     printf("welcome to use file manager!\n");
     do {
         getcwd(path, sizeof(path));
-        printf("\ncurrent path : %s\n", path);
-        printf("Commands:\n");
+        printf("current path : %s\n", path);
+        list_content(path);
+        printf("\nCommands:\n");
         for(int i = 0; i < COMMAND_NUMBER; ++i) {
             printf("  %-10s\t\t\t%s\n", commands[i], description[i]);
         }
