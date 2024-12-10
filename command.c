@@ -5,6 +5,16 @@
 #include <dirent.h>
 #include "command.h"
 
+char * getname(char * name)
+{
+    fflush(stdin);
+    if(fgets(name, MAX_NAME, stdin)) {
+        *strchr(name, '\n') = '\0';
+        return name;
+    }
+    return NULL;
+}
+
 int execute(char * path, const char * command)
 {
     if(strcmp(command, "open") == 0) {
@@ -56,15 +66,15 @@ void list_content(const char * path)
 
 void open_file(char * path)
 {
-    char file[MAX_NAME] = {0};
+    char filename[MAX_NAME] = {0};
     printf("enter file name : ");
-    fflush(stdin);
-    fgets(file, MAX_NAME, stdin);
-    if(strchr(file, '\n')){
-        *strchr(file, '\n') = '\0';
+    if(!getname(filename)) {
+        system("cls");
+        printf("stdin error");
+        return;
     }
     strncat(path, "\\", MAX_PATH - strlen(path));
-    strncat(path, file, MAX_PATH - strlen(path));
+    strncat(path, filename, MAX_PATH - strlen(path));
 
     system("cls");
     if(ShellExecute(NULL, "open", path, NULL, NULL, SW_SHOWNORMAL) <= (HINSTANCE)32) {
@@ -79,10 +89,10 @@ void switch_directory(char * path)
 {
     printf("input target folder : ");
     char folder[MAX_NAME] = {0};
-    fflush(stdin);
-    fgets(folder, MAX_NAME, stdin);
-    if(strchr(folder, '\n')){
-        *strchr(folder, '\n') = '\0';
+    if(!getname(folder)) {
+        system("cls");
+        printf("stdin error");
+        return;
     }
     strncat(path, "\\", MAX_PATH - strlen(path));
     strncat(path, folder, MAX_PATH - strlen(path));
