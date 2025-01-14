@@ -9,9 +9,9 @@ typedef struct list{
 }List;
 
 Node * newNode(char, Node *);
-List * newList(int);
+List * newList();
 void getList(List *);
 void printList(Node *);
 int compare(List *, char *);
 void splice(char *, List *);
-void freeList(List **);
+void freeList(List *);

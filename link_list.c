@@ -12,34 +12,44 @@ Node * newNode(char data, Node * next)
     return new;
 }
 
-List * newList(int num)
+List * newList()
 {
     List * new = (List *)malloc(sizeof(List));
-    new->num = num;
-    if(num != 0) {
-        new->node = newNode(0, NULL);
-        Node * node = new->node;
-        for(int i = 1; i < num; ++i) {
-            node->next = newNode(0, NULL);
-            node = node->next;
-        }
-        return new;
-    }
+    new->num = 0;
     new->node = NULL;
     return new;
 }
 
+//put the string into linklist, the limitation of length is MAX_PATH
 void getList(List * list)
 {
     if(list == NULL) return;
+
+    //initiallize list
     Node * node = list->node;
+    for(int i = 0; i < list->num; ++i) {
+        Node * deleted = node;
+        node = node->next;
+        free(deleted);
+    }
+    list->num = 0;
+    list->node = NULL;
+    node = NULL;
+
     char c;
     fflush(stdin);
-    while((c = fgetc(stdin)) != '\n') {
-        node->data = c;
+    while((c = fgetc(stdin)) != '\n' && list->num < MAX_PATH - 1) {
+        ++list->num;
+        if(list->node == NULL) {
+            list->node = newNode(c, NULL);
+            node = list->node;
+            continue;
+        }
+        node->next = newNode(c, NULL);
         node = node->next;
     }
-    node->data = '\0';
+    if(node != NULL)
+        node->next = newNode('\0', NULL);
 }
 
 void printList(Node *list)
@@ -52,6 +62,7 @@ void printList(Node *list)
     }
 }
 
+//compare linklist and array, if the same, it'll return 1; return 0 if it isn't; return -1 if error happened
 int compare(List * list, char * a)
 {
     if(list == NULL) return -1;
@@ -66,6 +77,7 @@ int compare(List * list, char * a)
     return 0;
 }
 
+//connect path and list, the formula is path\list
 void splice(char * path, List * list)
 {
     Node * node = list->node;
@@ -78,14 +90,13 @@ void splice(char * path, List * list)
     }
 }
 
-void freeList(List ** list)
+void freeList(List * list)
 {
-    Node * node = (*list)->node;
-    for(int i = 0; i < (*list)->num; ++i) {
+    Node * node = list->node;
+    for(int i = 0; i < list->num; ++i) {
         Node * deleted = node;
         node = node->next;
         free(deleted);
     }
-    free(*list);
-    list = NULL;
+    free(list);
 }
