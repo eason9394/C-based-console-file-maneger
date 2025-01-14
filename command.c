@@ -39,6 +39,24 @@ int execute(char * path, List * command)
     return 1;
 }
 
+//get name from stdin and return 1; if nothing input, return 0
+int get_name(char * path)
+{
+    List * name = newList();
+    getList(name);
+    if(name->num == 0) {
+        system("cls");
+        printf("Illegal operation! You must enter somthing\n");
+        freeList(name);
+        name = NULL;
+        return 0;
+    }
+    splice(path, name);
+    freeList(name);
+    name = NULL;
+    return 1;
+}
+
 void list_content(const char * path)
 {
     if(path == NULL) return;
@@ -100,12 +118,8 @@ void list_content(const char * path)
 
 void open_file(char * path)
 {
-    List * filename = newList();
     printf("enter file name : ");
-    getList(filename);
-    splice(path, filename);
-    freeList(filename);
-    filename = NULL;
+    if(!get_name(path)) return;
 
     system("cls");
     if(ShellExecute(NULL, "open", path, NULL, NULL, SW_SHOWNORMAL) <= (HINSTANCE)32) {
@@ -118,12 +132,8 @@ void open_file(char * path)
 
 void switch_directory(char * path)
 {
-    List * folder = newList();
     printf("input target folder : ");
-    getList(folder);
-    splice(path, folder);
-    freeList(folder);
-    folder = NULL;
+    if(!get_name(path)) return;
 
     system("cls");
     if(chdir(path)) {
@@ -146,22 +156,27 @@ void move_file()
     if (!MoveFile(source, destination)) {
         DWORD error = GetLastError();
         printf("Failed to move file: %s to %s. Error code: %lu\n", source, destination, error);
-        switch (error) {
+        switch(error) {
             case ERROR_FILE_NOT_FOUND:
                 printf("Source file not found.\n");
                 break;
+
             case ERROR_PATH_NOT_FOUND:
                 printf("Destination path not found.\n");
                 break;
+
             case ERROR_ACCESS_DENIED:
                 printf("Access denied.\n");
                 break;
+
             case ERROR_SHARING_VIOLATION:
                 printf("File is being used by another process.\n");
                 break;
+
             case ERROR_ALREADY_EXISTS:
                 printf("A file with the same name already exists at the destination.\n");
                 break;
+
             default:
                 printf("An unknown error occurred.\n");
                 break;
@@ -183,19 +198,23 @@ void copy_file()
     if (!CopyFile(source, destination, FALSE)) {
         DWORD error = GetLastError();
         printf("Failed to copy file: %s to %s. Error code: %lu\n", source, destination, error);
-        switch (error) {
+        switch(error) {
             case ERROR_FILE_NOT_FOUND:
                 printf("Source file not found.\n");
                 break;
+
             case ERROR_PATH_NOT_FOUND:
                 printf("Destination path not found.\n");
                 break;
+
             case ERROR_ACCESS_DENIED:
                 printf("Access denied.\n");
                 break;
+
             case ERROR_SHARING_VIOLATION:
                 printf("File is being used by another process.\n");
                 break;
+
             default:
                 printf("An unknown error occurred.\n");
                 break;
@@ -208,18 +227,7 @@ void copy_file()
 void create_file(char * path)
 {
     printf("enter file name: ");
-    List * filename = newList(MAX_PATH);
-    getList(filename);
-    if(filename->num == 0) {
-        system("cls");
-        printf("Illegal operation!\n");
-        freeList(filename);
-        filename = NULL;
-        return;
-    }
-    splice(path, filename);
-    freeList(filename);
-    filename = NULL;
+    if(!get_name(path)) return;
 
     system("cls");
     FILE * new = fopen(path, "w");
@@ -234,33 +242,25 @@ void create_file(char * path)
 void create_directory(char * path)
 {
     printf("enter folder name: ");
-    List * folder = newList();
-    getList(folder);
-    if(folder->num == 0) {
-        system("cls");
-        printf("Illegal operation!\n");
-        freeList(folder);
-        folder = NULL;
-        return;
-    }
-    splice(path, folder);
-    freeList(folder);
-    folder = NULL;
+    if(!get_name(path)) return;
 
     system("cls");
     if (!CreateDirectory(path, NULL)) {
         DWORD error = GetLastError();
         printf("Failed to create directory: %s. Error code: %lu\n", path, error);
-        switch (error) {
+        switch(error) {
             case ERROR_ALREADY_EXISTS:
                 printf("Directory already exists.\n");
                 break;
+
             case ERROR_PATH_NOT_FOUND:
                 printf("Path not found.\n");
                 break;
+
             case ERROR_ACCESS_DENIED:
                 printf("Access denied.\n");
                 break;
+
             default:
                 printf("An unknown error occurred.\n");
                 break;

@@ -80,6 +80,10 @@ int compare(List * list, char * a)
 //connect path and list, the formula is path\list
 void splice(char * path, List * list)
 {
+    if(path == NULL) return;
+    if(list == NULL) return;
+    if(list->num == 0) return;
+
     Node * node = list->node;
     path += strlen(path);
     *(path) = '\\';
